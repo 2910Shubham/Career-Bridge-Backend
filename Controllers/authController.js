@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import User from '../Models/usermodel.js'
+import User from '../models/usermodel.js'
 import { sendVerificationEmail, sendPasswordResetEmail } from '../Utils/emailService.js';
 
 // Generate JWT Token
