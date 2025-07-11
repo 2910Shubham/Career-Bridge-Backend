@@ -19,4 +19,4 @@ async function testEmails() {
     }
 }
 
-testEmails()
+testEmails();
