@@ -15,7 +15,7 @@ const transporter = nodemailer.createTransport({
 
 // Send verification email
 export const sendVerificationEmail = async (to, token) => {
-    const verificationUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/verify/${token}`;
+    const verificationUrl = `${process.env.FRONTEND_URL || 'http://localhost:8080'}/verify/${token}`;
     const mailOptions = {
         from: process.env.EMAIL_FROM || 'no-reply@careerbridge.com',
         to,
@@ -30,7 +30,7 @@ export const sendVerificationEmail = async (to, token) => {
 
 // Send password reset email
 export const sendPasswordResetEmail = async (to, token) => {
-    const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/reset-password/${token}`;
+    const resetUrl = `${process.env.FRONTEND_URL || 'http://localhost:8080'}/reset-password/${token}`;
     const mailOptions = {
         from: process.env.EMAIL_FROM || 'no-reply@careerbridge.com',
         to,

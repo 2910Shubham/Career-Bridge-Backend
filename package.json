@@ -4,7 +4,9 @@
   "type": "module",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "cross-env NODE_ENV=development node app.js",
+    "dev": "cross-env NODE_ENV=development nodemon app.js"
   },
   "keywords": [],
   "author": "",
@@ -12,10 +14,15 @@
   "description": "",
   "dependencies": {
     "bcryptjs": "^3.0.2",
+    "config": "^4.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
     "crypto": "^1.0.1",
+    "debug": "^4.4.1",
     "dotenv": "^17.2.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.17.0",
     "mongoose": "^8.16.3",
     "nodemailer": "^7.0.5",
     "path": "^0.12.7",

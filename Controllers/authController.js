@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import User from '../models/usermodel.js'
+import { configDotenv } from 'dotenv';
 import { sendVerificationEmail, sendPasswordResetEmail } from '../Utils/emailService.js';
 
 // Generate JWT Token
@@ -23,6 +24,7 @@ export const register = async (req, res) => {
     try {
         const {
             username,
+            fullname,
             password,
             email,
             role,
@@ -77,6 +79,7 @@ export const register = async (req, res) => {
         // Create user object
         const userData = {
             username,
+            fullname,
             password: hashedPassword,
             email,
             role,
@@ -120,6 +123,7 @@ export const register = async (req, res) => {
             message: 'User registered successfully. Please check your email for verification.',
             data: {
                 userId: user._id,
+                fullname: user.fullname,
                 username: user.username,
                 email: user.email,
                 role: user.role,
@@ -184,20 +188,24 @@ export const login = async (req, res) => {
         // Generate token
         const token = generateToken(user._id);
 
+        // Set token as httpOnly cookie
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        });
+
         res.status(200).json({
             success: true,
             message: 'Login successful',
             data: {
-                token,
-                user: {
-                    id: user._id,
-                    username: user.username,
-                    email: user.email,
-                    role: user.role,
-                    isVerified: user.isVerified,
-                    profilePicture: user.profilePicture,
-                    lastLogin: user.lastLogin
-                }
+                userId: user._id,
+                fullname: user.fullname,
+                username: user.username,
+                email: user.email,
+                role: user.role,
+                isVerified: user.isVerified
             }
         });
 
@@ -217,6 +225,11 @@ export const logout = async (req, res) => {
     try {
         // In a stateless JWT system, logout is typically handled client-side
         // by removing the token from storage
+        res.clearCookie('token', {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+        });
         res.status(200).json({
             success: true,
             message: 'Logout successful'
@@ -241,7 +254,8 @@ export const verifyEmail = async (req, res) => {
         if (!user) {
             return res.status(400).json({
                 success: false,
-                message: 'Invalid or expired verification token'
+                message: 'Invalid or expired verification token',
+                isVerified: false
             });
         }
 
@@ -252,14 +266,16 @@ export const verifyEmail = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            message: 'Email verified successfully'
+            message: 'Email verified successfully',
+            isVerified: true
         });
 
     } catch (error) {
         console.error('Email verification error:', error);
         res.status(500).json({
             success: false,
-            message: 'Server error during email verification'
+            message: 'Server error during email verification',
+            isVerified: false
         });
     }
 };
