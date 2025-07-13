@@ -189,12 +189,20 @@ export const login = async (req, res) => {
         const token = generateToken(user._id);
 
         // Set token as httpOnly cookie
-        res.cookie('token', token, {
+        const cookieOptions = {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
-            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-        });
+            sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+            path: '/',
+            domain: process.env.NODE_ENV === 'production' ? process.env.COOKIE_DOMAIN : undefined
+        };
+        
+        console.log('Setting cookie with options:', cookieOptions);
+        res.cookie('token', token, cookieOptions);
+        
+        // Log cookie for debugging
+        console.log('Cookie set successfully. Token length:', token.length);
 
         res.status(200).json({
             success: true,
@@ -228,7 +236,9 @@ export const logout = async (req, res) => {
         res.clearCookie('token', {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict',
+            sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+            path: '/',
+            domain: process.env.NODE_ENV === 'production' ? process.env.COOKIE_DOMAIN : undefined
         });
         res.status(200).json({
             success: true,
