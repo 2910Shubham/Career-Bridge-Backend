@@ -7,8 +7,25 @@ export const editProfile = async (req, res) => {
         console.log('req.body:', req.body);
         console.log('req.file:', req.file);
 
-        // Defensive: fallback to empty object if req.body is undefined
-        const updateData = req.body || {};
+        // Parse the user object from FormData if present
+        let updateData = {};
+        if (req.body.user) {
+            try {
+                updateData = JSON.parse(req.body.user);
+            } catch (e) {
+                return res.status(400).json({ success: false, message: 'Invalid user data' });
+            }
+        } else {
+            updateData = req.body || {};
+        }
+
+        // Log the parsed updateData for debugging
+        console.log('Parsed updateData:', updateData);
+
+        // If a file was uploaded, update the profilePicture field
+        if (req.file && req.file.path) {
+            updateData.profilePicture = req.file.path;
+        }
 
         const userId = req.user.userId; 
 

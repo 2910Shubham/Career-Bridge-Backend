@@ -32,19 +32,27 @@ app.use(cors({
   origin: ['http://localhost:3000', 'http://localhost:8080', 'http://localhost:3001', 'http://127.0.0.1:3000', 'http://127.0.0.1:8080'],
   credentials: true
 }));
-app.use(express.json());
+
+// Custom middleware to handle both JSON and FormData
+app.use((req, res, next) => {
+  // Skip JSON parsing for routes that handle file uploads
+  if (req.path.includes('/profile') && req.method === 'PUT') {
+    return next();
+  }
+  
+  // Apply JSON parsing for other routes
+  express.json()(req, res, next);
+});
+
 app.use(express.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname,'public')));
 app.use(cookieParser());
-
 
 app.use('/', indexRouter);
 app.use('/api/users', userRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/admin', adminRouter);
 
-
 app.listen(process.env.PORT || 3000, () => {
     console.log(`Server started on port ${process.env.PORT || 3000}`);
 });
-
