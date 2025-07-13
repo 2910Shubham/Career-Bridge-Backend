@@ -191,7 +191,7 @@ export const login = async (req, res) => {
         // Set token as httpOnly cookie
         const cookieOptions = {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
+            secure: process.env.NODE_ENV === 'production' ,
             sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
             path: '/',
@@ -204,17 +204,17 @@ export const login = async (req, res) => {
         // Log cookie for debugging
         console.log('Cookie set successfully. Token length:', token.length);
 
+        // Prepare user data to send (exclude sensitive fields)
+        const userData = user.toObject();
+        delete userData.password;
+        delete userData.verificationToken;
+        delete userData.resetPasswordToken;
+        delete userData.resetPasswordExpires;
+
         res.status(200).json({
             success: true,
             message: 'Login successful',
-            data: {
-                userId: user._id,
-                fullname: user.fullname,
-                username: user.username,
-                email: user.email,
-                role: user.role,
-                isVerified: user.isVerified
-            }
+            data: userData
         });
 
     } catch (error) {

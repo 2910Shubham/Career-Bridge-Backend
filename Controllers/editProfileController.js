@@ -3,8 +3,14 @@ import mongoose from 'mongoose';
 
 export const editProfile = async (req, res) => {
     try {
+        // Debug logs
+        console.log('req.body:', req.body);
+        console.log('req.file:', req.file);
+
+        // Defensive: fallback to empty object if req.body is undefined
+        const updateData = req.body || {};
+
         const userId = req.user.userId; 
-        const updateData = req.body;
 
         // Validate user ID
         if (!mongoose.Types.ObjectId.isValid(userId)) {
@@ -58,9 +64,18 @@ export const editProfile = async (req, res) => {
         }
 
         // Profile information
-        if (updateData.profilePicture) updateFields.profilePicture = updateData.profilePicture;
+        // Debug log for file and body
+        console.log('editProfile req.file:', req.file);
+        console.log('editProfile req.body:', updateData);
+        if (req.file && req.file.path) {
+            updateFields.profilePicture = req.file.path;
+        } else if (updateData.profilePicture) {
+            updateFields.profilePicture = updateData.profilePicture;
+        }
         if (updateData.bio !== undefined) updateFields.bio = updateData.bio;
         if (updateData.location !== undefined) updateFields.location = updateData.location;
+        if (updateData.dateOfBirth) updateFields.dateOfBirth = new Date(updateData.dateOfBirth);
+        if (updateData.phoneNumber) updateFields.phoneNumber = updateData.phoneNumber;
 
         // Skills
         if (updateData.skills) {
@@ -312,3 +327,13 @@ const validateURL = (url) => {
         return false;
     }
 };
+
+
+
+
+
+
+
+
+
+

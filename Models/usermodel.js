@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { type } from "os";
 
 const userSchema = new mongoose.Schema({
     // Basic User Information
@@ -37,7 +38,7 @@ const userSchema = new mongoose.Schema({
     // Profile Information
     profilePicture: {   
         type: String,
-        default: "C:/Users/Shubham2/Desktop/Backend Career Bridge/Public/Images/deafult.png",
+        default: "Images/deafult.png",
     },
     bio: {
         type: String,
@@ -46,6 +47,14 @@ const userSchema = new mongoose.Schema({
     location: {
         type: String,
         default: null,
+    },
+    dateOfBirth: {
+        type: Date,
+        default: null,
+    },
+    phoneNumber: {
+        type: String,
+        default: ''
     },
 
     // Education & Experience
@@ -399,11 +408,8 @@ const userSchema = new mongoose.Schema({
         newsletter: {
             type: Boolean,
             default: false
-        },
-        phoneNumber: {
-            type: String,
-            default: false
         }
+
     }
 });
 
