@@ -2,10 +2,12 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import db from './config/mongoDbConfig.js';
-import indexRouter from './routes/indexRouter.js';
-import userRouter from './routes/userRouter.js';
+import indexRouter from './Routes/indexRouter.js';
+import userRouter from './Routes/userRouter.js';
 import adminRouter from './routes/adminRouter.js';
 import authRouter from './routes/authRouter.js';
+import jobRouter from './routes/jobRouter.js';
+
 import express from 'express';
 import path from 'path';
 // import mongoose from 'mongoose';
@@ -52,6 +54,7 @@ app.use('/', indexRouter);
 app.use('/api/users', userRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/admin', adminRouter);
+app.use('/api/job', jobRouter);
 
 app.listen(process.env.PORT || 3000, () => {
     console.log(`Server started on port ${process.env.PORT || 3000}`);

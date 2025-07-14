@@ -1,13 +1,24 @@
 import express from "express";
 import path from "path";
 import isLoggedIn from '../middlewares/isLoggedIn.js';
-import { editProfile, getCurrentUserProfile } from '../controllers/editProfileController.js';
+import {
+  editProfile,
+  getCurrentUserProfile,
+  getUserById
+} from '../controllers/editProfileController.js';
+import {
+  createPost,
+  getAllPosts,
+  getPostById,
+  updatePost,
+  deletePost
+} from '../controllers/postController.js';
 import upload from '../config/multer.js';
 import User from '../models/usermodel.js';
 const router = express.Router();
 
 // Edit user profile (frontend should submit to this route)
-router.put('/profile', isLoggedIn, upload.single('profilePicture'), editProfile);
+router.put('/profile', isLoggedIn, editProfile);
 
 // Get current user profile
 router.get('/profile', isLoggedIn, getCurrentUserProfile);
@@ -30,5 +41,15 @@ router.post('/profile/upload', isLoggedIn, upload.single('profilePicture'), asyn
     res.status(500).json({ success: false, message: 'Image upload failed', error: err.message });
   }
 });
+
+// Post routes
+router.post('/posts', isLoggedIn, createPost);
+router.get('/posts', isLoggedIn, getAllPosts);
+router.get('/posts/:id', isLoggedIn, getPostById);
+router.put('/posts/:id', isLoggedIn, updatePost);
+router.delete('/posts/:id', isLoggedIn, deletePost);
+
+// Public route to get user by ID
+router.get('/:id', getUserById);
 
 export default router;

@@ -36,7 +36,7 @@ const jopSchema = new mongoose.Schema({
     },
     recruiterId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Recruiter',
+        ref: 'User',
         required: true,
     },
     createdAt: {
@@ -71,6 +71,6 @@ const jopSchema = new mongoose.Schema({
     },  
 });
 
-const Job = mongoose.model('Job', jopSchema);
+const Job = mongoose.model('Job', jopSchema, 'jobs');
 
 export default Job;

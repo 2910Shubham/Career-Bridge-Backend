@@ -160,42 +160,8 @@ const userSchema = new mongoose.Schema({
 
     // Posts & Social Features
     posts: [{
-        content: String,
-        images: [String], // URLs to uploaded images
-        likes: [{
-            userId: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'User'
-            },
-            date: {
-                type: Date,
-                default: Date.now
-            }
-        }],
-        comments: [{
-            userId: {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: 'User'
-            },
-            content: String,
-            date: {
-                type: Date,
-                default: Date.now
-            }
-        }],
-        createdAt: {
-            type: Date,
-            default: Date.now
-        },
-        updatedAt: {
-            type: Date,
-            default: Date.now
-        },
-        visibility: {
-            type: String,
-            enum: ['public', 'connections', 'private'],
-            default: 'public'
-        }
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Post'
     }],
 
     // Student-specific fields
@@ -249,6 +215,11 @@ const userSchema = new mongoose.Schema({
         }]
     },
 
+    jobPosts: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Job'
+    }],
+
     // Recruiter-specific fields
     recruiterInfo: {
         companyName: String,
@@ -261,58 +232,7 @@ const userSchema = new mongoose.Schema({
             type: Boolean,
             default: false
         },
-        jobPosts: [{
-            title: String,
-            company: String,
-            location: String,
-            type: {
-                type: String,
-                enum: ['Full-time', 'Part-time', 'Contract', 'Internship', 'Freelance']
-            },
-            salary: {
-                min: Number,
-                max: Number,
-                currency: {
-                    type: String,
-                    default: 'USD'
-                }
-            },
-            description: String,
-            requirements: String,
-            skillsRequired: [String],
-            benefits: [String],
-            applicationDeadline: Date,
-            status: {
-                type: String,
-                enum: ['Active', 'Closed', 'Draft', 'Expired'],
-                default: 'Active'
-            },
-            applicants: [{
-                userId: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'User'
-                },
-                status: {
-                    type: String,
-                    enum: ['Applied', 'Screening', 'Interviewing', 'Offer Sent', 'Hired', 'Rejected'],
-                    default: 'Applied'
-                },
-                appliedDate: {
-                    type: Date,
-                    default: Date.now
-                },
-                resume: String,
-                coverLetter: String
-            }],
-            createdAt: {
-                type: Date,
-                default: Date.now
-            },
-            updatedAt: {
-                type: Date,
-                default: Date.now
-            }
-        }],
+       
         hiringStats: {
             totalJobPosts: {
                 type: Number,

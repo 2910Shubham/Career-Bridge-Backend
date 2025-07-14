@@ -499,7 +499,9 @@ export const changePassword = async (req, res) => {
 // @access  Private
 export const getCurrentUser = async (req, res) => {
     try {
-        const user = await User.findById(req.user.userId).select('-password -verificationToken -resetPasswordToken');
+        const user = await User.findById(req.user.userId)
+            .select('-password -verificationToken -resetPasswordToken')
+            .populate('jobPosts');
         
         if (!user) {
             return res.status(404).json({

@@ -304,7 +304,9 @@ export const getCurrentUserProfile = async (req, res) => {
     try {
         const userId = req.user.id;
 
-        const user = await User.findById(userId).select('-password -resetPasswordToken -resetPasswordExpires -verificationToken');
+        const user = await User.findById(userId)
+            .select('-password -resetPasswordToken -resetPasswordExpires -verificationToken')
+            .populate('jobPosts');
         
         if (!user) {
             return res.status(404).json({
@@ -326,6 +328,23 @@ export const getCurrentUserProfile = async (req, res) => {
             success: false,
             message: 'Internal server error'
         });
+    }
+};
+
+// Get user by ID
+export const getUserById = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id)
+            .select('-password -resetPasswordToken -resetPasswordExpires -verificationToken')
+            .populate('jobPosts')
+            .populate('posts');
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+        res.status(200).json({ success: true, data: user });
+    } catch (error) {
+        console.error('Get user by ID error:', error);
+        res.status(500).json({ success: false, message: 'Server error' });
     }
 };
 
